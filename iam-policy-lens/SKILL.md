@@ -20,7 +20,7 @@ Use this skill when you need to audit, analyze, or map Google Cloud API (GAPIC) 
 ## Execution
 Run the analyzer on the target project directory using the copied script:
 ```bash
-/Users/petrusca/Google/policy-lens/.venv/bin/python3 scripts/analyzer.py <path_to_target_project> [python_env_path]
+/Users/petrusca/Google/policy-lens/.venv/bin/python3 scripts/python/analyzer.py <path_to_target_project> [python_env_path]
 ```
 
 - **`<path_to_target_project>`**: The absolute or relative path of the Python repository you wish to scan.
@@ -48,5 +48,5 @@ The output lists detected API calls grouped by file, along with their line numbe
 - **Unresolved Types (`Any` or `[fallback]`)**:
   If Jedi cannot find type definitions for external client libraries, provide the path to the target project's virtual environment as the third parameter:
   ```bash
-  /Users/petrusca/Google/policy-lens/.venv/bin/python3 scripts/analyzer.py /path/to/project /path/to/project/.venv/bin/python
+  /Users/petrusca/Google/policy-lens/.venv/bin/python3 scripts/python/analyzer.py /path/to/project /path/to/project/.venv/bin/python
   ```

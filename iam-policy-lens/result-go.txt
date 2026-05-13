@@ -1,0 +1,244 @@
+Scanning: /Users/petrusca/Google/skills/gcp_cost_optimizer_agent/go for Google Cloud Go API calls
+
+📄 File: /Users/petrusca/Google/skills/gcp_cost_optimizer_agent/go/agent.go
+     agent.go:100: `return llmagent.New(llmagent.Config{`
+     Method: google.golang.org/adk/agent/llmagent.New [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+📄 File: /Users/petrusca/Google/skills/gcp_cost_optimizer_agent/go/main.go
+     main.go:70: `m, err := gemini.NewModel(ctx, cfg.ModelName, &genai.ClientConfig{`
+     Method: google.golang.org/adk/model/gemini.NewModel [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+     main.go:84: `loader := agent.NewSingleLoader(costAgent)`
+     Method: google.golang.org/adk/agent.NewSingleLoader [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+     main.go:89: `SessionService: session.InMemoryService(),`
+     Method: google.golang.org/adk/session.InMemoryService [typechecker]
+
+     main.go:93: `adkHandler := adkrest.NewHandler(launcherConfig, 120*time.Second)`
+     Method: google.golang.org/adk/server/adkrest.NewHandler [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+📄 File: /Users/petrusca/Google/skills/gcp_cost_optimizer_agent/go/tools/agent_engines.go
+     tools/agent_engines.go:35: `return functiontool.New(functiontool.Config{`
+     Method: google.golang.org/adk/tool/functiontool.New [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+📄 File: /Users/petrusca/Google/skills/gcp_cost_optimizer_agent/go/tools/assets.go
+     tools/assets.go:31: `return functiontool.New(functiontool.Config{`
+     Method: google.golang.org/adk/tool/functiontool.New [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+     tools/assets.go:38: `c, err := asset.NewClient(ctx)`
+     Method: cloud.google.com/go/asset/apiv1.NewClient [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+     tools/assets.go:42: `defer c.Close()`
+     Method: cloud.google.com/go/asset/apiv1.Client.Close [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+     tools/assets.go:52: `it := c.ListAssets(ctx, req)`
+     Method: cloud.google.com/go/asset/apiv1.Client.ListAssets [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+     Permissions: [cloudasset.assets.searchAllResources]
+
+     tools/assets.go:54: `resp, err := it.Next()`
+     Method: cloud.google.com/go/asset/apiv1.AssetIterator.Next [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+📄 File: /Users/petrusca/Google/skills/gcp_cost_optimizer_agent/go/tools/billing.go
+     tools/billing.go:42: `return functiontool.New(functiontool.Config{`
+     Method: google.golang.org/adk/tool/functiontool.New [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+     tools/billing.go:60: `client, err := bigquery.NewClient(ctx, args.ProjectID)`
+     Method: cloud.google.com/go/bigquery.NewClient [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+     tools/billing.go:64: `defer client.Close()`
+     Method: cloud.google.com/go/bigquery.Client.Close [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+     tools/billing.go:95: `q := client.Query(queryStr)`
+     Method: cloud.google.com/go/bigquery.Client.Query [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+     Permissions: [bigquery.jobs.create]
+
+     tools/billing.go:100: `it, err := q.Read(ctx)`
+     Method: cloud.google.com/go/bigquery.Query.Read [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+     tools/billing.go:108: `err := it.Next(&row)`
+     Method: cloud.google.com/go/bigquery.RowIterator.Next [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+     tools/billing.go:169: `dataset := client.DatasetInProject(projectID, "billing_export")`
+     Method: cloud.google.com/go/bigquery.Client.DatasetInProject [typechecker]
+     Permissions: [bigquery.datasets.get]
+
+     tools/billing.go:170: `it := dataset.Tables(ctx)`
+     Method: cloud.google.com/go/bigquery.Dataset.Tables [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+     Permissions: [bigquery.tables.list]
+
+     tools/billing.go:172: `t, err := it.Next()`
+     Method: cloud.google.com/go/bigquery.TableIterator.Next [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+📄 File: /Users/petrusca/Google/skills/gcp_cost_optimizer_agent/go/tools/compute.go
+     tools/compute.go:39: `return functiontool.New(functiontool.Config{`
+     Method: google.golang.org/adk/tool/functiontool.New [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+     tools/compute.go:46: `client, err := compute.NewInstancesRESTClient(ctx)`
+     Method: cloud.google.com/go/compute/apiv1.NewInstancesRESTClient [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+     tools/compute.go:50: `defer client.Close()`
+     Method: cloud.google.com/go/compute/apiv1.InstancesClient.Close [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+     tools/compute.go:59: `it := client.AggregatedList(ctx, req)`
+     Method: cloud.google.com/go/compute/apiv1.InstancesClient.AggregatedList [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+     Permissions: [compute.instances.list]
+
+     tools/compute.go:61: `pair, err := it.Next()`
+     Method: cloud.google.com/go/compute/apiv1.InstancesScopedListPairIterator.Next [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+📄 File: /Users/petrusca/Google/skills/gcp_cost_optimizer_agent/go/tools/containers.go
+     tools/containers.go:36: `return functiontool.New(functiontool.Config{`
+     Method: google.golang.org/adk/tool/functiontool.New [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+     tools/containers.go:43: `client, err := container.NewClusterManagerClient(ctx)`
+     Method: cloud.google.com/go/container/apiv1.NewClusterManagerClient [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+     tools/containers.go:47: `defer client.Close()`
+     Method: cloud.google.com/go/container/apiv1.ClusterManagerClient.Close [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+     tools/containers.go:56: `resp, err := client.ListClusters(ctx, req)`
+     Method: cloud.google.com/go/container/apiv1.ClusterManagerClient.ListClusters [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+     Permissions: [container.clusters.list]
+
+     tools/containers.go:86: `Status:        c.Status.String(),`
+     Method: cloud.google.com/go/container/apiv1/containerpb.Cluster_Status.String [typechecker]
+
+     tools/containers.go:114: `return functiontool.New(functiontool.Config{`
+     Method: google.golang.org/adk/tool/functiontool.New [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+     tools/containers.go:125: `client, err := run.NewServicesClient(ctx)`
+     Method: cloud.google.com/go/run/apiv2.NewServicesClient [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+     tools/containers.go:129: `defer client.Close()`
+     Method: cloud.google.com/go/run/apiv2.ServicesClient.Close [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+     tools/containers.go:137: `it := client.ListServices(ctx, req)`
+     Method: cloud.google.com/go/run/apiv2.ServicesClient.ListServices [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+     Permissions: [run.services.list]
+
+     tools/containers.go:139: `svc, err := it.Next()`
+     Method: cloud.google.com/go/run/apiv2.ServiceIterator.Next [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+📄 File: /Users/petrusca/Google/skills/gcp_cost_optimizer_agent/go/tools/sandbox_test_auth.go
+     tools/sandbox_test_auth.go:12: `client, _ := container.NewClusterManagerClient(ctx, option.WithCredentialsFile("/path/to/key.json"))`
+     Method: cloud.google.com/go/container/apiv1.NewClusterManagerClient [typechecker]
+     Credentials: option.WithCredentialsFile("/path/to/key.json")
+     Provenance: CredentialProvenance.SA_EXPLICIT
+     Identity: IdentityContext.APP
+
+     tools/sandbox_test_auth.go:12: `client, _ := container.NewClusterManagerClient(ctx, option.WithCredentialsFile("/path/to/key.json"))`
+     Method: google.golang.org/api/option.WithCredentialsFile [typechecker]
+
+     tools/sandbox_test_auth.go:18: `client, _ := container.NewClusterManagerClient(ctx, option.WithCredentialsJSON([]byte("{}")))`
+     Method: cloud.google.com/go/container/apiv1.NewClusterManagerClient [typechecker]
+     Credentials: option.WithCredentialsJSON([]byte("{}"))
+     Provenance: CredentialProvenance.SA_EXPLICIT
+     Identity: IdentityContext.APP
+
+     tools/sandbox_test_auth.go:18: `client, _ := container.NewClusterManagerClient(ctx, option.WithCredentialsJSON([]byte("{}")))`
+     Method: google.golang.org/api/option.WithCredentialsJSON [typechecker]
+
+     tools/sandbox_test_auth.go:25: `client, _ := container.NewClusterManagerClient(ctx, myTokenSource)`
+     Method: cloud.google.com/go/container/apiv1.NewClusterManagerClient [typechecker]
+     Credentials: default/implicit
+     Provenance: CredentialProvenance.IMPLICIT
+     Identity: IdentityContext.APP
+
+Scan completed in 0.32 seconds.
+====================================================
