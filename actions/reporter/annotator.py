@@ -30,11 +30,15 @@ def generate_annotations(json_path: str):
 
     changed_files = set()
     try:
-        res = subprocess.run(["git", "diff", "--name-only", "HEAD~1"], capture_output=True, text=True, cwd=workspace)
+        res = subprocess.run(["git", "diff", "--name-only", "HEAD^1"], capture_output=True, text=True, cwd=workspace)
         if res.returncode == 0:
             changed_files = {f.strip() for f in res.stdout.splitlines() if f.strip()}
+        else:
+            print(f"Debug git diff failed: {res.stderr}", file=sys.stderr)
     except Exception as e:
         print(f"Warning: Could not determine changed files: {e}", file=sys.stderr)
+
+    print(f"DEBUG CHANGED FILES: {changed_files}")
 
     def get_priority(call_obj):
         abs_path = call_obj.get("file_path", "")
