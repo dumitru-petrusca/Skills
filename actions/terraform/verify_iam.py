@@ -19,10 +19,60 @@ import re
 from terraform import get_granted_permissions, find_permission_locations
 
 
+def resolve_relative_path(file_path, workspace):
+    """Resolves a file path robustly to a relative path from workspace, handling potential ../ prefixes."""
+    if not file_path:
+        return "N/A"
+    resolved_path = file_path
+    if not os.path.isabs(resolved_path):
+        cwd_path = os.path.abspath(resolved_path)
+        if os.path.exists(cwd_path):
+            resolved_path = cwd_path
+        else:
+            ws_path = os.path.abspath(os.path.join(workspace, resolved_path))
+            if os.path.exists(ws_path):
+                resolved_path = ws_path
+            else:
+                stripped_path = resolved_path
+                while stripped_path.startswith('../'):
+                    stripped_path = stripped_path[3:]
+                ws_stripped = os.path.abspath(os.path.join(workspace, stripped_path))
+                if os.path.exists(ws_stripped):
+                    resolved_path = ws_stripped
+    return os.path.relpath(resolved_path, workspace)
+
+
 def get_required_permissions(policy_json_path):
     """Reads required permissions from the Policy Lens JSON artifact (Consolidated IAM V3 Allow Policies)."""
     with open(policy_json_path, "r", encoding="utf-8") as f:
-        data = json.load(f)
+        content = f.read()
+
+    try:
+        data = json.loads(content)
+    except json.JSONDecodeError:
+        # Try to extract JSON block by finding lines that start/end with JSON markers
+        lines = content.splitlines()
+        start_idx = -1
+        end_idx = -1
+        for idx, line in enumerate(lines):
+            stripped = line.strip()
+            if start_idx == -1 and (stripped.startswith('{') or stripped.startswith('[')):
+                start_idx = idx
+            if start_idx != -1 and (stripped.startswith('}') or stripped.startswith(']')):
+                end_idx = idx
+
+        if start_idx != -1 and end_idx != -1:
+            try:
+                json_str = "\n".join(lines[start_idx:end_idx+1])
+                data = json.loads(json_str)
+            except json.JSONDecodeError as e:
+                print(f"Error: Failed to parse extracted JSON block: {e}", file=sys.stderr)
+                sys.exit(1)
+        else:
+            print("Error: Policy Lens JSON is not valid JSON and no JSON block found.", file=sys.stderr)
+            sys.exit(1)
+
+
 
     required = set()
 
@@ -175,7 +225,7 @@ def main():
             if locs:
                 for loc in locs:
                     abs_path = loc["file_path"]
-                    rel_path = os.path.relpath(abs_path, workspace) if abs_path else "N/A"
+                    rel_path = resolve_relative_path(abs_path, workspace)
                     line = loc["line"]
                     method = loc["method"]
                     
@@ -207,7 +257,7 @@ def main():
             locs = tf_locs.get(perm, [])
             if locs:
                 for file_path, line in locs:
-                    rel_path = os.path.relpath(file_path, workspace)
+                    rel_path = resolve_relative_path(file_path, workspace)
                     print(f"::{log_level} file={rel_path},line={line},title=Over-privileged IAM Permission::GCP permission '{perm}' is granted in Terraform but not required by any API calls in the codebase.")
                     summary_lines.append(f"| `{perm}` | `{rel_path}:{line}` |")
             else:
