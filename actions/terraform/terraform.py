@@ -10,12 +10,7 @@ without requiring network, providers, state, or cloud credentials.
 import os
 import sys
 import re
-
-try:
-    import hcl2
-    HAS_HCL2 = True
-except ImportError:
-    HAS_HCL2 = False
+import hcl2
 
 
 def get_granted_permissions(tf_dir):
@@ -26,35 +21,20 @@ def get_granted_permissions(tf_dir):
         print(f"Error: Terraform directory '{tf_dir}' does not exist.", file=sys.stderr)
         sys.exit(1)
 
-    if not HAS_HCL2:
-        print("Info: 'python-hcl2' is not installed. Falling back to built-in regex parser.", file=sys.stderr)
-
     for filename in sorted(os.listdir(tf_dir)):
         if filename.endswith(".tf"):
             file_path = os.path.join(tf_dir, filename)
             try:
                 with open(file_path, "r", encoding="utf-8") as f:
-                    content = f.read()
+                    tf_content = hcl2.load(f)
 
-                if HAS_HCL2:
-                    tf_content = hcl2.loads(content)
-                    # Parse the HCL resource definitions
-                    for resource in tf_content.get("resource", []):
-                        if "google_project_iam_custom_role" in resource:
-                            role_block = list(resource["google_project_iam_custom_role"].values())[0]
-                            permissions = role_block.get("permissions", [])
-                            if isinstance(permissions, list):
-                                granted.update(permissions)
-                else:
-                    # Regex fallback parser: Find custom role blocks and extract permissions
-                    role_blocks = re.findall(r'resource\s+"google_project_iam_custom_role"\s+"[^"]+"\s*\{(.*?)\}', content, re.DOTALL)
-                    for block in role_blocks:
-                        perm_match = re.search(r'permissions\s*=\s*\[(.*?)\]', block, re.DOTALL)
-                        if perm_match:
-                            perms_block = perm_match.group(1)
-                            # Find all double-quoted strings inside the list
-                            perms = re.findall(r'"([^"]+)"', perms_block)
-                            granted.update(perms)
+                # Parse the HCL resource definitions
+                for resource in tf_content.get("resource", []):
+                    if "google_project_iam_custom_role" in resource:
+                        role_block = list(resource["google_project_iam_custom_role"].values())[0]
+                        permissions = role_block.get("permissions", [])
+                        if isinstance(permissions, list):
+                            granted.update(permissions)
             except Exception as e:
                 print(f"Warning: Error parsing HCL from {filename}: {e}", file=sys.stderr)
 
