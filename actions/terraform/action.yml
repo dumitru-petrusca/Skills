@@ -23,12 +23,6 @@ runs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
-    - name: Install Verification Dependencies
-      shell: bash
-      run: |
-        if [ -f "${{ github.action_path }}/requirements.txt" ]; then
-          pip install -r "${{ github.action_path }}/requirements.txt"
-        fi
     - name: Run IAM Verification Gate
       shell: bash
       run: |

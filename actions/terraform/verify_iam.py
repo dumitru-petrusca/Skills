@@ -16,7 +16,7 @@ import sys
 import json
 import argparse
 import re
-from terraform import get_granted_permissions, find_permission_locations
+from terraform import scan_granted_permissions
 
 
 def resolve_relative_path(file_path, workspace):
@@ -190,8 +190,8 @@ def main():
         print(f"Error loading Policy Lens JSON: {e}", file=sys.stderr)
         sys.exit(1)
 
-    # Extract granted permissions from HCL
-    granted = get_granted_permissions(args.tf_dir)
+    # Extract granted permissions and their locations from HCL in a single pass
+    granted, tf_locs = scan_granted_permissions(args.tf_dir)
 
     print(f"🔍 Codebase requires:  {sorted(list(required))}")
     print(f"🛡️ Terraform grants:  {sorted(list(granted))}")
@@ -210,7 +210,6 @@ def main():
 
     # Resolve missing permissions source locations if possible
     missing_locs = get_missing_permission_locations(args.gapic_calls, missing)
-    tf_locs = find_permission_locations(args.tf_dir)
 
     if missing:
         failed = True
